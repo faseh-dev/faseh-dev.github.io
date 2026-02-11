@@ -76,23 +76,12 @@ button {
 
 #yesBtn:hover { transform:scale(1.12); }
 
-const noBtn = document.getElementById("noBtn");
-const card = document.querySelector(".card");
-
-noBtn.addEventListener("mouseover", () => {
-  const rect = card.getBoundingClientRect();
-
-  const padding = 20;
-  const maxX = rect.width - noBtn.offsetWidth - padding;
-  const maxY = rect.height - noBtn.offsetHeight - padding;
-
-  const x = Math.random() * maxX;
-  const y = Math.random() * maxY;
-
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
-});
-
+#noBtn {
+  background:#999;
+  color:white;
+  left:210px;
+  top:230px;
+}
 
 .musicBtn {
   position:absolute;
@@ -103,6 +92,8 @@ noBtn.addEventListener("mouseover", () => {
   border-radius:20px;
   background:#eee;
 }
+
+/* dialog */
 
 .dialog {
   position:fixed;
@@ -126,6 +117,8 @@ noBtn.addEventListener("mouseover", () => {
   to{transform:scale(1);opacity:1}
 }
 
+/* floating hearts */
+
 .floatHeart {
   position:fixed;
   font-size:22px;
@@ -136,6 +129,8 @@ noBtn.addEventListener("mouseover", () => {
   from { transform:translateY(100vh); opacity:1; }
   to { transform:translateY(-10vh); opacity:0; }
 }
+
+/* fireworks */
 
 .particle {
   position:fixed;
@@ -151,6 +146,25 @@ noBtn.addEventListener("mouseover", () => {
     opacity:0;
   }
 }
+
+/* image reveal */
+
+#yesImage {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:black;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+#yesImage img {
+  max-width:90%;
+  max-height:90%;
+  border-radius:20px;
+  box-shadow:0 0 40px rgba(255,255,255,.4);
+}
 </style>
 </head>
 
@@ -160,7 +174,7 @@ noBtn.addEventListener("mouseover", () => {
 <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3">
 </audio>
 
-<div class="card">
+<div class="card" id="card">
   <button class="musicBtn" onclick="toggleMusic()">🔊 Music</button>
 
   <h1>Amina ❤️</h1>
@@ -173,28 +187,33 @@ noBtn.addEventListener("mouseover", () => {
   <button id="noBtn">NO 🙈</button>
 </div>
 
+<!-- popup dialog -->
 <div class="dialog" id="dialog">
   <div class="dialogBox">
     <h2>She said YES!! 💖</h2>
     <p>You just made my world brighter, Amina ✨</p>
-    <button onclick="closeDialog()">Kiss accepted 😄</button>
+    <button onclick="closeDialog()">Close</button>
   </div>
 </div>
 
+<!-- image reveal -->
+<div id="yesImage" onclick="this.style.display='none'">
+  <img src="amina.jpg">
+</div>
+
 <script>
+
 /* typewriter */
-const text = "I have something special to ask you...";
+const text = "I have something very special to ask you...";
 let i=0;
-function type(){
+(function type(){
   if(i<text.length){
-    document.getElementById("typeText").innerHTML += text[i];
-    i++;
+    document.getElementById("typeText").innerHTML += text[i++];
     setTimeout(type,50);
   }
-}
-type();
+})();
 
-/* countdown reveal */
+/* countdown */
 let c=5;
 const cd = document.getElementById("countdown");
 const t=setInterval(()=>{
@@ -203,30 +222,32 @@ const t=setInterval(()=>{
   if(c<0){clearInterval(t); cd.innerHTML="Okay here goes 💌";}
 },1000);
 
-/* runaway NO */
+/* NO button stays inside card and slips away */
 const noBtn=document.getElementById("noBtn");
-let tease = [
-  "Nice try 😄",
-  "Nope nope nope",
-  "You can't press this",
-  "Only YES works 😌",
-  "Destiny says YES"
-];
+const card=document.getElementById("card");
 
 noBtn.addEventListener("mouseover",()=>{
-  noBtn.innerText = tease[Math.floor(Math.random()*tease.length)];
-  noBtn.style.left=Math.random()*(window.innerWidth-120)+"px";
-  noBtn.style.top=Math.random()*(window.innerHeight-80)+"px";
+  const rect = card.getBoundingClientRect();
+
+  const maxX = rect.width - noBtn.offsetWidth - 20;
+  const maxY = rect.height - noBtn.offsetHeight - 20;
+
+  const x = Math.random()*maxX;
+  const y = Math.random()*maxY;
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 });
 
 /* YES click */
 document.getElementById("yesBtn").onclick=()=>{
   document.getElementById("dialog").style.display="flex";
+  document.getElementById("yesImage").style.display="flex";
   hearts();
   fireworksBurst();
 };
 
-/* floating hearts */
+/* hearts */
 function hearts(){
   setInterval(()=>{
     const h=document.createElement("div");
@@ -263,14 +284,13 @@ function closeDialog(){
   document.getElementById("dialog").style.display="none";
 }
 
-/* music toggle (mobile safe) */
+/* music */
 const music=document.getElementById("music");
 function toggleMusic(){
-  if(music.paused){ music.play(); }
-  else { music.pause(); }
+  music.paused ? music.play() : music.pause();
 }
+
 </script>
 
 </body>
 </html>
-
