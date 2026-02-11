@@ -2,37 +2,39 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Be My Valentine ❤️</title>
+<title>Amina, Be My Valentine ❤️</title>
 
 <style>
 body {
     margin: 0;
     height: 100vh;
+    overflow: hidden;
+    font-family: "Comic Sans MS", cursive;
+    background: radial-gradient(circle at top, #ff9a9e, #fecfef);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: "Comic Sans MS", cursive, sans-serif;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    overflow: hidden;
 }
 
 .card {
     background: white;
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 25px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
     position: relative;
+    width: 360px;
 }
 
 h1 {
-    color: #e60073;
+    color: #ff2e63;
     margin-bottom: 10px;
 }
 
-p {
-    font-size: 20px;
-    margin-bottom: 30px;
+#countdown {
+    font-size: 22px;
+    color: #444;
+    margin: 10px 0 20px;
 }
 
 button {
@@ -41,15 +43,14 @@ button {
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: 0.2s;
     position: absolute;
 }
 
 #yesBtn {
-    background: #ff4d6d;
+    background: #ff2e63;
     color: white;
-    left: 40%;
-    top: 65%;
+    left: 70px;
+    top: 220px;
 }
 
 #yesBtn:hover {
@@ -57,18 +58,19 @@ button {
 }
 
 #noBtn {
-    background: #999;
+    background: #888;
     color: white;
-    left: 58%;
-    top: 65%;
+    left: 200px;
+    top: 220px;
 }
 
 #result {
-    font-size: 26px;
-    color: #e60073;
+    font-size: 24px;
+    color: #ff2e63;
     margin-top: 20px;
 }
-.hearts {
+
+.heart {
     position: fixed;
     font-size: 24px;
     animation: floatUp 4s linear infinite;
@@ -78,13 +80,57 @@ button {
     from { transform: translateY(100vh); opacity: 1; }
     to { transform: translateY(-10vh); opacity: 0; }
 }
+
+/* dialog */
+.dialog {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-box {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    animation: pop 0.4s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.firework {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: explode 1s ease-out forwards;
+}
+
+@keyframes explode {
+    to {
+        transform: translate(var(--dx), var(--dy));
+        opacity: 0;
+    }
+}
 </style>
 </head>
 
 <body>
 
+<!-- background music -->
+<audio autoplay loop>
+  <source src="https://cdn.pixabay.com/audio/2022/02/23/audio_d1718c6b9c.mp3" type="audio/mpeg">
+</audio>
+
 <div class="card">
-    <h1>❤️ Hey My Love ❤️</h1>
+    <h1>❤️ Amina ❤️</h1>
+    <div id="countdown">Loading...</div>
     <p>Will you be my Valentine?</p>
 
     <button id="yesBtn">YES 😍</button>
@@ -93,36 +139,79 @@ button {
     <div id="result"></div>
 </div>
 
+<!-- dialog -->
+<div class="dialog" id="dialog">
+  <div class="dialog-box">
+    <h2>Yay Amina!! ❤️</h2>
+    <p>You just made me the happiest person alive 💖</p>
+    <button onclick="closeDialog()">Close</button>
+  </div>
+</div>
+
 <script>
 const noBtn = document.getElementById("noBtn");
 const yesBtn = document.getElementById("yesBtn");
 const result = document.getElementById("result");
+const dialog = document.getElementById("dialog");
 
-// Move NO button away on hover
+/* moving NO button */
 noBtn.addEventListener("mouseover", () => {
-    const x = Math.random() * (window.innerWidth - 120);
+    const x = Math.random() * (window.innerWidth - 100);
     const y = Math.random() * (window.innerHeight - 60);
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
 });
 
-// YES click result + hearts
+/* YES click */
 yesBtn.addEventListener("click", () => {
-    result.innerHTML = "Yayyyyy!! ❤️ I love you!!";
-    startHearts();
+    result.innerHTML = "She said YES!! 💕";
+    dialog.style.display = "flex";
+    hearts();
+    fireworks();
 });
 
-function startHearts() {
-    setInterval(() => {
-        const heart = document.createElement("div");
-        heart.className = "hearts";
-        heart.innerHTML = "❤️";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (20 + Math.random()*20) + "px";
-        document.body.appendChild(heart);
+/* countdown (5 second dramatic build) */
+let c = 5;
+const cd = document.getElementById("countdown");
+const timer = setInterval(() => {
+    cd.innerHTML = "Big question in " + c + "…";
+    c--;
+    if (c < 0) {
+        clearInterval(timer);
+        cd.innerHTML = "Here it comes 💌";
+    }
+}, 1000);
 
-        setTimeout(() => heart.remove(), 4000);
-    }, 300);
+/* floating hearts */
+function hearts() {
+    setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.innerHTML = "❤️";
+        h.style.left = Math.random()*100 + "vw";
+        h.style.fontSize = (18+Math.random()*20)+"px";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),4000);
+    }, 250);
+}
+
+/* fireworks */
+function fireworks() {
+    for (let i=0;i<80;i++) {
+        const f = document.createElement("div");
+        f.className = "firework";
+        f.style.left = "50%";
+        f.style.top = "50%";
+        f.style.background = `hsl(${Math.random()*360},100%,50%)`;
+        f.style.setProperty('--dx', (Math.random()-0.5)*400 + 'px');
+        f.style.setProperty('--dy', (Math.random()-0.5)*400 + 'px');
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),1000);
+    }
+}
+
+function closeDialog(){
+    dialog.style.display = "none";
 }
 </script>
 
