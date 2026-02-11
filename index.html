@@ -76,12 +76,23 @@ button {
 
 #yesBtn:hover { transform:scale(1.12); }
 
-#noBtn {
-  background:#999;
-  color:white;
-  left:210px;
-  top:230px;
-}
+const noBtn = document.getElementById("noBtn");
+const card = document.querySelector(".card");
+
+noBtn.addEventListener("mouseover", () => {
+  const rect = card.getBoundingClientRect();
+
+  const padding = 20;
+  const maxX = rect.width - noBtn.offsetWidth - padding;
+  const maxY = rect.height - noBtn.offsetHeight - padding;
+
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+});
+
 
 .musicBtn {
   position:absolute;
@@ -262,3 +273,4 @@ function toggleMusic(){
 
 </body>
 </html>
+
